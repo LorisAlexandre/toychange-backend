@@ -1,12 +1,4 @@
-{
-  "username": "coco",
-  "firstname": "marci",
-  "lastname": "lavoine2",
-  "email": "lolo2@gmail.com",
-  "password": "0000",
-  "_id": "65771f5cf9c0de914a69cb3c",
-  "__v": 0
-}
+
 
 _id
 65772983d6956600debc663b
@@ -32,3 +24,33 @@ _id
 65772983d6956600debc663d
 __v
 1
+
+user": {
+    "username": "houss82",
+    "firstname": "houssem",
+    "lastname": "mansour",
+    "email": "login@gmail.com",
+    "password": "0000",
+    "_id": "65772b4719c0c6c5a945fe17",
+    "authTokens": [
+      {
+        "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTc3MmI0NzE5YzBjNmM1YTk0NWZlMTciLCJpYXQiOjE3MDIzMDg2NzksImV4cCI6MTcwNDkwMDY3OX0.nadA2i8tiMhH3clIj5Lt0XXSfp4Js6aO-WFNTJc5hKM",
+        "_id": "65772b4719c0c6c5a945fe19"
+      }
+    ],
+    "__v": 1}
+
+    "user": {
+    "username": "loris2023",
+    "firstname": "loris",
+    "lastname": "alex",
+    "email": "log@gmail.com",
+    "password": "0000",
+    "_id": "65772c0719c0c6c5a945fe20",
+    "authTokens": [
+      {
+        "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTc3MmMwNzE5YzBjNmM1YTk0NWZlMjAiLCJpYXQiOjE3MDIzMDg4NzIsImV4cCI6MTcwNDkwMDg3Mn0.2f6lIsEAZe9S6GPnL4saI-fA0-pfW9mlo59nTGagvj0",
+        "_id": "65772c0819c0c6c5a945fe22"
+      }
+    ],
+    "__v": 1}
