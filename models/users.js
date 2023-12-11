@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
   username: String,
-  nom: String,
-  prenom: String,
-  password: String,
-  ville : String,  
+  firstname: String,
+  lastname: String,
+  email: String,
+  password: String,  
   token: String,
-  En_ligne: Boolean,
-  canDelete: Boolean,
+  // annonces:{type: mongoose.Schema.Types.ObjectId, ref: 'annonces'},
+ 
 });
 
 const User = mongoose.model('users', userSchema);

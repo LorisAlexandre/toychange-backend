@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 
 
 router.post('/signup', (req, res) => {
-  if (!checkBody(req.body, ['username', 'password'])) {
+  if (!checkBody(req.body, ['email', 'password'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
     return;
   }
@@ -21,13 +21,11 @@ router.post('/signup', (req, res) => {
 
       const newUser = new User({
         username: req.body.username,
-        nom: req.body.nom,
-        prenom: req.body.prenom,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
         password: hash,
         token: uid2(32),
-        ville : req.body.ville,  
-        En_ligne: true,
-        canDelete: true,
       });
 
       newUser.save().then(newDoc => {
@@ -41,12 +39,12 @@ router.post('/signup', (req, res) => {
 });
 
 router.post('/signin', (req, res) => {
-  if (!checkBody(req.body, ['username', 'password'])) {
+  if (!checkBody(req.body, ['email', 'password'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
     return;
   }
 
-  User.findOne({ username: req.body.username }).then(data => {
+  User.findOne({ email: req.body.email }).then(data => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
       res.json({ result: true, token: data.token });
     } else {
