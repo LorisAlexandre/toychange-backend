@@ -8,59 +8,66 @@ const uid2 = require('uid2');
 const bcrypt = require('bcrypt');
 
 
-router.post('/signup', (req, res) => {
+router.post('/signup', async (req, res) => {
   if (!checkBody(req.body, ['email', 'password'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
     return;
   }
+  try {
+    // Vérifier si l'utilisateur existe déjà
+    const existingUser = await User.findOne({ email: req.body.email });
 
-  // Check if the user has not already been registered
-  User.findOne({ username: req.body.username }).then(data => {
-    if (data === null) {
-      const hash = bcrypt.hashSync(req.body.password, 10);
-
-      const newUser = new User({
-        username: req.body.username,
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        password: hash,
-        token: uid2(32),
-      });
-
-      newUser.save().then(newDoc => {
-        res.json({ result: true, token: newDoc.token });
-      });
-    } else {
-      // User already exists in database
+    if (existingUser) {
+      // L'utilisateur existe déjà, renvoyer une erreur
       res.json({ result: false, error: 'User already exists' });
+      return;
     }
-  });
-});
 
-router.post('/signin', (req, res) => {
+    // L'utilisateur n'existe pas, créer un nouvel utilisateur
+    const hash = bcrypt.hashSync(req.body.password, 10);
+    const user = new User({
+      username: req.body.username,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      email: req.body.email,
+      password: hash,
+    });
+
+    // Sauvegarder l'utilisateur
+    const saveUser = await user.save();
+    
+    // Générer le token JWT et sauvegarder l'utilisateur
+    const authToken = await saveUser.generateAuthTokenAndSaveUser();
+
+    res.status(201).send({ user: saveUser, authToken });
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+  
+router.post('/signin', async (req, res) => {
   if (!checkBody(req.body, ['email', 'password'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
     return;
   }
 
-  User.findOne({ email: req.body.email }).then(data => {
-    if (data && bcrypt.compareSync(req.body.password, data.password)) {
-      res.json({ result: true, token: data.token });
+  try {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (user && bcrypt.compareSync(req.body.password, user.password)) {
+      // Génération du token JWT et sauvegarde de l'utilisateur
+      const authToken = await user.generateAuthTokenAndSaveUser();
+
+      res.json({ result: true, username: user.username,  firstname: user.firstname, lastname: user.lastname, id: user.id, authToken, email: user.email });
     } else {
       res.json({ result: false, error: 'User not found or wrong password' });
     }
-  });
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
-router.get('/:token', (req, res) => {
-  User.findOne({ token: req.params.token }).then(data => {
-    if (data) {
-      res.json({ result: true, token: data.token });
-    } else {
-      res.json({ result: false, error: 'User not found' });
-    }
-  });
-});
+
+
 
 module.exports = router;
