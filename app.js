@@ -9,6 +9,7 @@ const fileUpload = require("express-fileupload");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var sendcloudRouter = require("./routes/sendcloudAPI");
+var pusherRouter = require("./routes/pusherAPI");
 
 var app = express();
 
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-app.use("/sendclouAPI", sendcloudRouter);
+app.use("/sendcloudAPI", sendcloudRouter);
+app.use("/pusherAPI", pusherRouter);
 
 module.exports = app;
