@@ -10,6 +10,7 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var sendcloudRouter = require("./routes/sendcloudAPI");
 var pusherRouter = require("./routes/pusherAPI");
+var stripeRouter = require("./routes/stripeAPI");
 
 var app = express();
 
@@ -25,5 +26,6 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/sendcloudAPI", sendcloudRouter);
 app.use("/pusherAPI", pusherRouter);
+app.use("/stripeAPI", stripeRouter);
 
 module.exports = app;
