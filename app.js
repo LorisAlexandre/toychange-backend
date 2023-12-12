@@ -5,9 +5,9 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
-
+require("./models/connexion")
 var indexRouter = require("./routes/index");
-
+const announceRouter = require ("./routes/announce.js")
 var app = express();
 
 app.use(cors());
@@ -19,5 +19,5 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-
+app.use("/announce", announceRouter)
 module.exports = app;
