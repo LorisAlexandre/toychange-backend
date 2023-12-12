@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+const authentification = require('../middlewares/authentification')
 require('../models/connection');
 const User = require('../models/users');
 const { checkBody } = require('../module/checkBody');
@@ -67,7 +68,8 @@ router.post('/signin', async (req, res) => {
   }
 });
 
-
-
+router.get('/me', authentification, async (req, res, next) => {
+  res.send(req.user);
+})
 
 module.exports = router;
