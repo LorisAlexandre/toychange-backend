@@ -42,4 +42,28 @@ router.post("/create-checkout-stripe", (req, res) => {
     });
 });
 
+router.post("/payment-sheet", (req, res) => {
+  const { shippingFees } = req.body;
+  stripe.customers.create().then((customer) => {
+    stripe.ephemeralKeys
+      .create({ customer: customer.id }, { apiVersion: "2023-10-16" })
+      .then((ephemeralKey) => {
+        stripe.paymentIntents
+          .create({
+            amount: Number(shippingFees),
+            currency: "eur",
+            customer: customer.id,
+          })
+          .then((paymentIntent) => {
+            res.json({
+              paymentIntent: paymentIntent.client_secret,
+              ephemeralKey: ephemeralKey.secret,
+              customer: customer.id,
+              publishableKey: process.env.STRIPE_API_PUBLISHABLE_KEY,
+            });
+          });
+      });
+  });
+});
+
 module.exports = router;
