@@ -17,7 +17,7 @@ router.post("/shippingPrice", (req, res) => {
   )
     .then((res) => res.json())
     .then((data) => {
-      if (data) {
+      if (data.length) {
         data = data.shipping_methods
           .filter(
             (el) =>
