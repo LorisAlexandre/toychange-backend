@@ -4,9 +4,9 @@ const router = express.Router();
 const stripe = require("stripe")(process.env.STRIPE_API_KEY);
 
 router.post("/create-checkout-stripe", (req, res) => {
-  const { cart, shippingFees } = req.body;
+  const { item, shippingFees } = req.body;
 
-  const lineItems = cart.map((item) => ({
+  const lineItems = {
     price_data: {
       currency: "EUR",
       product_data: {
@@ -15,13 +15,13 @@ router.post("/create-checkout-stripe", (req, res) => {
       unit_amount: 0,
     },
     quantity: 1,
-  }));
+  };
 
   stripe.checkout.sessions
     .create({
       payment_method_types: ["card"],
       line_items: [
-        ...lineItems,
+        lineItems,
         {
           price_data: {
             currency: "EUR",
