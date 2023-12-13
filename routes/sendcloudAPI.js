@@ -42,7 +42,6 @@ router.post("/createParcel", (req, res) => {
   //   telephone,
   //   email,
   //   weight,
-  //   order_number,
   //   total_order_value,
   // } = req.body;
   const data = {
@@ -51,6 +50,7 @@ router.post("/createParcel", (req, res) => {
       country: "FR",
       request_label: true,
       shipment: { id: 8 },
+      order_number: uniqid(),
       total_order_value_currency: "EUR",
     },
   };
