@@ -50,7 +50,7 @@ router.post("/payment-sheet", (req, res) => {
       .then((ephemeralKey) => {
         stripe.paymentIntents
           .create({
-            amount: Number(shippingFees),
+            amount: Math.floor(Number(shippingFees) * 100),
             currency: "eur",
             customer: customer.id,
           })
