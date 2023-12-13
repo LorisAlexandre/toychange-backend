@@ -1,13 +1,16 @@
 require("dotenv").config();
+
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
-require("./models/connexion")
+
+require("./models/connexion");
+
 var indexRouter = require("./routes/index");
-const announceRouter = require ("./routes/announce.js")
+const announceRouter = require("./routes/announce.js");
 var usersRouter = require("./routes/users");
 var sendcloudRouter = require("./routes/sendcloudAPI");
 var pusherRouter = require("./routes/pusherAPI");
@@ -24,7 +27,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/announce", announceRouter)
+app.use("/announce", announceRouter);
 app.use("/users", usersRouter);
 app.use("/sendcloudAPI", sendcloudRouter);
 app.use("/pusherAPI", pusherRouter);

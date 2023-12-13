@@ -1,17 +1,15 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-const authentification = require('../middlewares/authentification')
-require('../models/connection');
-const User = require('../models/users');
-const { checkBody } = require('../module/checkBody');
-const uid2 = require('uid2');
-const bcrypt = require('bcrypt');
+const authentification = require("../middlewares/authentification");
+const User = require("../models/users");
+const { checkBody } = require("../module/checkBody");
+const uid2 = require("uid2");
+const bcrypt = require("bcrypt");
 
-
-router.post('/signup', async (req, res) => {
-  if (!checkBody(req.body, ['email', 'password'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
+router.post("/signup", async (req, res) => {
+  if (!checkBody(req.body, ["email", "password"])) {
+    res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
   try {
@@ -20,7 +18,7 @@ router.post('/signup', async (req, res) => {
 
     if (existingUser) {
       // L'utilisateur existe déjà, renvoyer une erreur
-      res.json({ result: false, error: 'User already exists' });
+      res.json({ result: false, error: "User already exists" });
       return;
     }
 
@@ -36,7 +34,7 @@ router.post('/signup', async (req, res) => {
 
     // Sauvegarder l'utilisateur
     const saveUser = await user.save();
-    
+
     // Générer le token JWT et sauvegarder l'utilisateur
     const authToken = await saveUser.generateAuthTokenAndSaveUser();
 
@@ -45,10 +43,10 @@ router.post('/signup', async (req, res) => {
     res.status(400).send(e);
   }
 });
-  
-router.post('/signin', async (req, res) => {
-  if (!checkBody(req.body, ['email', 'password'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
+
+router.post("/signin", async (req, res) => {
+  if (!checkBody(req.body, ["email", "password"])) {
+    res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
 
@@ -59,17 +57,25 @@ router.post('/signin', async (req, res) => {
       // Génération du token JWT et sauvegarde de l'utilisateur
       const authToken = await user.generateAuthTokenAndSaveUser();
 
-      res.json({ result: true, username: user.username,  firstname: user.firstname, lastname: user.lastname, id: user.id, authToken, email: user.email });
+      res.json({
+        result: true,
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        id: user.id,
+        authToken,
+        email: user.email,
+      });
     } else {
-      res.json({ result: false, error: 'User not found or wrong password' });
+      res.json({ result: false, error: "User not found or wrong password" });
     }
   } catch (error) {
     res.status(500).send(error);
   }
 });
 
-router.get('/me', authentification, async (req, res, next) => {
+router.get("/me", authentification, async (req, res, next) => {
   res.send(req.user);
-})
+});
 
 module.exports = router;
