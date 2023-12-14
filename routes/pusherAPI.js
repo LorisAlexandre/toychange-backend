@@ -49,6 +49,17 @@ router.get("/:channelName/messages", (req, res) => {
     });
 });
 
+router.get("/channel", (req, res) => {
+  // const { buyer, seller, annonce } = req.query;
+  Channel.findOne({ ...req.query }).then((channel) => {
+    if (channel) {
+      res.json({ result: true, channel });
+    } else {
+      res.json({ result: false });
+    }
+  });
+});
+
 router.delete("/:channelName/delete", (req, res) => {
   const { channelName } = req.params;
   Channel.deleteOne({ _id: channelName }).then((data) => {
