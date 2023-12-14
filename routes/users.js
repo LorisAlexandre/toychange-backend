@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const authentification = require('../middlewares/authentification')
-require('../models/connection');
+require('../models/connexion');
 const User = require('../models/users');
 const { checkBody } = require('../module/checkBody');
 const uid2 = require('uid2');
@@ -70,6 +70,34 @@ router.post('/signin', async (req, res) => {
 
 router.get('/me', authentification, async (req, res, next) => {
   res.send(req.user);
-})
+});
+
+// Route pour mettre à jour les informations de l'utilisateur
+router.put('/update/', authentification, async (req, res) => {
+  // Vérifiez si les champs nécessaires sont présents dans la requête
+  if (!checkBody(req.body, ['username', 'firstname', 'lastname'])) {
+    res.json({ result: false, error: 'Missing or empty fields' });
+    return;
+  }
+
+  try {
+    // Récupérez l'utilisateur à partir du middleware d'authentification
+    const user = req.user;
+
+    // Mettez à jour les informations de l'utilisateur
+    user.username = req.body.username;
+    user.firstname = req.body.firstname;
+    user.lastname = req.body.lastname;
+    user.email = req.body.email;
+    user.password = req.body.password;
+
+    // Sauvegardez les modifications
+    await user.save();
+
+    res.json({ result: true, message: 'User information updated successfully', user });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
 module.exports = router;
