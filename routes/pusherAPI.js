@@ -13,7 +13,7 @@ const pusher = new Pusher({
 
 router.post("/createChannel", (req, res) => {
   // const { buyer, seller, annonce } = req.body;
-  const newChannel = new Channel(req.body);
+  const newChannel = new Channel({ ...req.body });
   newChannel.save().then((newChannel) => {
     const channelName = newChannel._id.toString();
     pusher.trigger(channelName, "Création", {
