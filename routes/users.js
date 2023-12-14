@@ -40,7 +40,9 @@ router.post('/signup', async (req, res) => {
     // Générer le token JWT et sauvegarder l'utilisateur
     const authToken = await saveUser.generateAuthTokenAndSaveUser();
 
-    res.status(201).send({ user: saveUser, authToken });
+    const formattedDate = `${('0' + saveUser.registrationDate.getDate()).slice(-2)}/${('0' + (saveUser.registrationDate.getMonth() + 1)).slice(-2)}/${saveUser.registrationDate.getFullYear()}`;
+
+    res.status(201).send({ registrationDate: formattedDate, username: saveUser.username,  firstname: saveUser.firstname, lastname: saveUser.lastname, id: saveUser.id, authToken, email: saveUser.email, password: saveUser.password });
   } catch (e) {
     res.status(400).send(e);
   }

@@ -28,18 +28,21 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  authTokens:[ {
     authToken: {
       type: String,
-   required: true
-  }
-  }]
+   required: false,
+  },
+  registrationDate: {
+    type: Date,
+    default: Date.now,
+  },
   
- 
+  
 });
 userSchema.methods.generateAuthTokenAndSaveUser = async function() {
   const authToken = jwt.sign({ _id: this._id.toString()}, 'toychange',  {  expiresIn : '30day'  });
-  this.authTokens.push({ authToken });
+  this.authToken = authToken;
+  console.log(authToken);
   await this.save();
   return authToken;
 

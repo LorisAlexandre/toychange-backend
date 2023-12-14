@@ -1,56 +1,27 @@
+{
+  "registrationDate": "14/12/2023",
+  "username": "houss06",
+  "firstname": "houssem",
+  "lastname": "mansour",
+  "id": "657b479ea04d2e5063b61220",
+  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTdiNDc5ZWEwNGQyZTUwNjNiNjEyMjAiLCJpYXQiOjE3MDI1NzgwNzgsImV4cCI6MTcwNTE3MDA3OH0.g33GfRLxu7362yihqqfBwaYikF5vNs2id9hn4G8o15o",
+  "email": "houss@yahoo.fr",
+  "password": "$2b$10$CI2sd0W3VkHNaraDDby/tu8hG67L2198PY1z9zhxWdmnObwNolQMm"
+  
+password:Houss06
 
+}
 
-_id
-65772983d6956600debc663b
-username
-"moi"
-firstname
-"houss"
-lastname
-"mans"
-email
-"lo@gmail.com"
-password
-"1111"
+{
+  "registrationDate": "14/12/2023",
+  "username": "loris2023",
+  "firstname": "loris",
+  "lastname": "alexandre",
+  "id": "657b4817a04d2e5063b61224",
+  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTdiNDgxN2EwNGQyZTUwNjNiNjEyMjQiLCJpYXQiOjE3MDI1NzgyMDAsImV4cCI6MTcwNTE3MDIwMH0.6ReYMhE6Cywuwn1TzHRH04gkKZF1f-fZNqGQQwmEDwk",
+  "email": "loris@yahoo.fr",
+  "password": "$2b$10$Dv6VZ8lhAhNgN0OZf5Xe0e0pgC.FshHgkKJLBxmjsG.cRAkdBrV4S"
 
-authTokens
-Array (1)
+password:loris06
 
-0
-Object
-authToken
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTc3Mjk4M2Q2OTU2NjAwZ…"
-_id
-65772983d6956600debc663d
-__v
-1
-
-user": {
-    "username": "houss82",
-    "firstname": "houssem",
-    "lastname": "mansour",
-    "email": "login@gmail.com",
-    "password": "0000",
-    "_id": "65772b4719c0c6c5a945fe17",
-    "authTokens": [
-      {
-        "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTc3MmI0NzE5YzBjNmM1YTk0NWZlMTciLCJpYXQiOjE3MDIzMDg2NzksImV4cCI6MTcwNDkwMDY3OX0.nadA2i8tiMhH3clIj5Lt0XXSfp4Js6aO-WFNTJc5hKM",
-        "_id": "65772b4719c0c6c5a945fe19"
-      }
-    ],
-    "__v": 1}
-
-    "user": {
-    "username": "loris2023",
-    "firstname": "loris",
-    "lastname": "alex",
-    "email": "log@gmail.com",
-    "password": "0000",
-    "_id": "65772c0719c0c6c5a945fe20",
-    "authTokens": [
-      {
-        "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTc3MmMwNzE5YzBjNmM1YTk0NWZlMjAiLCJpYXQiOjE3MDIzMDg4NzIsImV4cCI6MTcwNDkwMDg3Mn0.2f6lIsEAZe9S6GPnL4saI-fA0-pfW9mlo59nTGagvj0",
-        "_id": "65772c0819c0c6c5a945fe22"
-      }
-    ],
-    "__v": 1}
+}
