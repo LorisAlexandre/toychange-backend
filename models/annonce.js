@@ -1,14 +1,5 @@
 const mongoose = require("mongoose");
 
-const parcelSchema = mongoose.Schema({
-  tracking_number: {
-    type: String,
-  },
-  label_url: {
-    type: String,
-  },
-});
-
 const announceSchema = mongoose.Schema({
   title: { type: String, required: true },
   type: { type: String, enum: ["donation", "exchange"], required: true },
@@ -27,8 +18,7 @@ const announceSchema = mongoose.Schema({
   },
   description: { type: String, required: true },
   exchangeProposal: { type: String },
-  donor: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  parcel: parcelSchema,
+  donor: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
 });
 
 const Announce = mongoose.model("announces", announceSchema);

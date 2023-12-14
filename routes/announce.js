@@ -83,15 +83,6 @@ router.patch("/update/:id", async (req, res) => {
   });
 });
 
-// route pour créer le colis
-router.put("createParcel/:id", (req, res) => {
-  const { id } = req.params;
-  const { parcel } = req.body;
-  Announce.updateOne({ _id: id }, { parcel }).then((data) => {
-    res.json({ result: true, data });
-  });
-});
-
 // Route to list all announces
 router.get("/announces", async (req, res) => {
   // Get all announces

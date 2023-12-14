@@ -10,7 +10,8 @@ const fileUpload = require("express-fileupload");
 require("./models/connexion");
 
 var indexRouter = require("./routes/index");
-const announceRouter = require("./routes/announce.js");
+const announceRouter = require("./routes/announce");
+const orderRouter = require("./routes/order");
 var usersRouter = require("./routes/users");
 var sendcloudRouter = require("./routes/sendcloudAPI");
 var pusherRouter = require("./routes/pusherAPI");
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/announce", announceRouter);
+app.use("/order", orderRouter);
 app.use("/users", usersRouter);
 app.use("/sendcloudAPI", sendcloudRouter);
 app.use("/pusherAPI", pusherRouter);
