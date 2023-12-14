@@ -60,6 +60,17 @@ router.get("/channel", (req, res) => {
   });
 });
 
+router.get("/channels/:user", (req, res) => {
+  const { user } = req.params;
+  Channel.find({ $or: [{ seller: user }, { buyer: user }] }).then(
+    (channels) => {
+      if (channels.length) {
+        res.json({ result: true, channels });
+      }
+    }
+  );
+});
+
 router.delete("/:channelName/delete", (req, res) => {
   const { channelName } = req.params;
   Channel.deleteOne({ _id: channelName }).then((data) => {
