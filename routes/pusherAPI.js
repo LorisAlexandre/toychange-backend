@@ -43,7 +43,7 @@ router.get("/:channelName/messages", (req, res) => {
   const { channelName } = req.params;
 
   Channel.findById(channelName)
-    // .populate([{ path: "annonce", model: "announces" }])
+    .populate(["annonce", "buyer", "seller"])
     .then((channel) => {
       res.json({ result: true, channel });
     });
@@ -62,13 +62,13 @@ router.get("/channel", (req, res) => {
 
 router.get("/channels/:user", (req, res) => {
   const { user } = req.params;
-  Channel.find({ $or: [{ seller: user }, { buyer: user }] }).then(
-    (channels) => {
+  Channel.find({ $or: [{ seller: user }, { buyer: user }] })
+    .populate("annonce")
+    .then((channels) => {
       if (channels.length) {
         res.json({ result: true, channels });
       }
-    }
-  );
+    });
 });
 
 router.delete("/:channelName/delete", (req, res) => {
