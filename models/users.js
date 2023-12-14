@@ -1,8 +1,7 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-
+const mongoose = require("mongoose");
+const validator = require("validator");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const userSchema = mongoose.Schema({
   username: {
@@ -45,9 +44,8 @@ userSchema.methods.generateAuthTokenAndSaveUser = async function() {
   console.log(authToken);
   await this.save();
   return authToken;
+};
 
-}
-
-const User = mongoose.model('users', userSchema);
+const User = mongoose.model("users", userSchema);
 
 module.exports = User;

@@ -3,6 +3,7 @@ const router = express.Router();
 const fs = require("fs");
 const uniqid = require("uniqid");
 const cloudinary = require("cloudinary").v2;
+const PDFDocument = require("pdfkit");
 
 router.post("/shippingPrice", (req, res) => {
   const { from_postal_code, to_postal_code, weight } = req.body;
@@ -17,6 +18,7 @@ router.post("/shippingPrice", (req, res) => {
   )
     .then((res) => res.json())
     .then((data) => {
+      console.log(data.shipping_methods.length);
       if (data) {
         data = data.shipping_methods
           .filter(
@@ -41,7 +43,6 @@ router.post("/createParcel", (req, res) => {
   //   telephone,
   //   email,
   //   weight,
-  //   order_number,
   //   total_order_value,
   // } = req.body;
   const data = {
@@ -50,6 +51,7 @@ router.post("/createParcel", (req, res) => {
       country: "FR",
       request_label: true,
       shipment: { id: 8 },
+      order_number: uniqid(),
       total_order_value_currency: "EUR",
     },
   };
@@ -88,17 +90,36 @@ router.get("/downloadLabel/:parcel_id", (req, res) => {
     .then((res) => res.arrayBuffer())
     .then((data) => {
       if (data) {
-        const labelPDF = `./tmp/${uniqid()}.pdf`;
-        fs.createWriteStream(labelPDF).write(Buffer.from(data));
+        //   const labelPDF = `./tmp/${uniqid()}.pdf`;
+        //   fs.createWriteStream(labelPDF).write(Buffer.from(data));
+        //   cloudinary.uploader
+        //     .upload(labelPDF, { raw_convert: "aspose", allowed_formats: "pdf" })
+        //     .then((data) => {
+        //       fs.unlinkSync(labelPDF);
+        //       res.json({ result: true, url: data.secure_url });
+        //     });
+        // } else {
+        //   res.status(500).json({ result: false });
+
+        const buffer = Buffer.from(data);
 
         cloudinary.uploader
-          .upload(labelPDF, { raw_convert: "aspose", allowed_formats: "pdf" })
-          .then((data) => {
-            fs.unlinkSync(labelPDF);
-            res.json({ result: true, url: data.secure_url });
-          });
-      } else {
-        res.status(500).json({ result: false });
+          .upload_stream(
+            {
+              resource_type: "raw",
+              allowed_formats: "pdf",
+              disposition: "inline",
+            },
+            (error, result) => {
+              if (error) {
+                console.error(error);
+                res.status(500).json({ result: false });
+              } else {
+                res.json({ result: true, url: result.secure_url });
+              }
+            }
+          )
+          .end(buffer);
       }
     });
 });

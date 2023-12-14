@@ -13,7 +13,7 @@ const pusher = new Pusher({
 
 router.post("/createChannel", (req, res) => {
   // const { buyer, seller, annonce } = req.body;
-  const newChannel = new Channel(req.body);
+  const newChannel = new Channel({ ...req.body });
   newChannel.save().then((newChannel) => {
     const channelName = newChannel._id.toString();
     pusher.trigger(channelName, "Création", {
@@ -43,9 +43,31 @@ router.get("/:channelName/messages", (req, res) => {
   const { channelName } = req.params;
 
   Channel.findById(channelName)
-    // .populate([{ path: "annonce", model: "announces" }])
+    .populate(["annonce", "buyer", "seller"])
     .then((channel) => {
       res.json({ result: true, channel });
+    });
+});
+
+router.get("/channel", (req, res) => {
+  // const { buyer, seller, annonce } = req.query;
+  Channel.findOne({ ...req.query }).then((channel) => {
+    if (channel) {
+      res.json({ result: true, channel });
+    } else {
+      res.json({ result: false });
+    }
+  });
+});
+
+router.get("/channels/:user", (req, res) => {
+  const { user } = req.params;
+  Channel.find({ $or: [{ seller: user }, { buyer: user }] })
+    .populate("annonce")
+    .then((channels) => {
+      if (channels.length) {
+        res.json({ result: true, channels });
+      }
     });
 });
 

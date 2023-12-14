@@ -1,17 +1,17 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
 const authentification = require('../middlewares/authentification')
-require('../models/connexion');
+require('../models/connection');
 const User = require('../models/users');
 const { checkBody } = require('../module/checkBody');
 const uid2 = require('uid2');
 const bcrypt = require('bcrypt');
 
 
-router.post('/signup', async (req, res) => {
-  if (!checkBody(req.body, ['email', 'password'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
+router.post("/signup", async (req, res) => {
+  if (!checkBody(req.body, ["email", "password"])) {
+    res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
   try {
@@ -20,7 +20,7 @@ router.post('/signup', async (req, res) => {
 
     if (existingUser) {
       // L'utilisateur existe déjà, renvoyer une erreur
-      res.json({ result: false, error: 'User already exists' });
+      res.json({ result: false, error: "User already exists" });
       return;
     }
 
@@ -36,7 +36,7 @@ router.post('/signup', async (req, res) => {
 
     // Sauvegarder l'utilisateur
     const saveUser = await user.save();
-    
+
     // Générer le token JWT et sauvegarder l'utilisateur
     const authToken = await saveUser.generateAuthTokenAndSaveUser();
 
@@ -47,10 +47,10 @@ router.post('/signup', async (req, res) => {
     res.status(400).send(e);
   }
 });
-  
-router.post('/signin', async (req, res) => {
-  if (!checkBody(req.body, ['email', 'password'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
+
+router.post("/signin", async (req, res) => {
+  if (!checkBody(req.body, ["email", "password"])) {
+    res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
 
@@ -61,45 +61,25 @@ router.post('/signin', async (req, res) => {
       // Génération du token JWT et sauvegarde de l'utilisateur
       const authToken = await user.generateAuthTokenAndSaveUser();
 
-      res.json({ result: true, username: user.username,  firstname: user.firstname, lastname: user.lastname, id: user.id, authToken, email: user.email });
+      res.json({
+        result: true,
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        id: user.id,
+        authToken,
+        email: user.email,
+      });
     } else {
-      res.json({ result: false, error: 'User not found or wrong password' });
+      res.json({ result: false, error: "User not found or wrong password" });
     }
   } catch (error) {
     res.status(500).send(error);
   }
 });
 
-router.get('/me', authentification, async (req, res, next) => {
+router.get("/me", authentification, async (req, res, next) => {
   res.send(req.user);
-});
-
-// Route pour mettre à jour les informations de l'utilisateur
-router.put('/update/', authentification, async (req, res) => {
-  // Vérifiez si les champs nécessaires sont présents dans la requête
-  if (!checkBody(req.body, ['username', 'firstname', 'lastname'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
-    return;
-  }
-
-  try {
-    // Récupérez l'utilisateur à partir du middleware d'authentification
-    const user = req.user;
-
-    // Mettez à jour les informations de l'utilisateur
-    user.username = req.body.username;
-    user.firstname = req.body.firstname;
-    user.lastname = req.body.lastname;
-    user.email = req.body.email;
-    user.password = req.body.password;
-
-    // Sauvegardez les modifications
-    await user.save();
-
-    res.json({ result: true, message: 'User information updated successfully', user });
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
+})
 
 module.exports = router;
