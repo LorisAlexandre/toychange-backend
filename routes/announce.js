@@ -8,8 +8,6 @@ const uniqid = require("uniqid");
 
 // Route to create a new announce
 router.post("/addAnnounce", (req, res) => {
-  let latitude;
-  let longitude;
   const {
     title,
     type,
@@ -28,35 +26,35 @@ router.post("/addAnnounce", (req, res) => {
   )
     .then((res) => res.json())
     .then((data) => {
-      latitude = data[0].lat;
-      longitude = data[0].lon;
-    });
-  const newAnnounce = new Announce({
-    title,
-    type,
-    deliveryMethod,
-    address: {
-      ...address,
-      coords: {
-        latitude,
-        longitude,
-      },
-    },
-    images,
-    category,
-    condition,
-    description,
-    exchangeProposal,
-    donor,
-  });
+      let latitude = data[0].lat;
+      let longitude = data[0].lon;
+      const newAnnounce = new Announce({
+        title,
+        type,
+        deliveryMethod,
+        address: {
+          ...address,
+          coords: {
+            latitude,
+            longitude,
+          },
+        },
+        images,
+        category,
+        condition,
+        description,
+        exchangeProposal,
+        donor,
+      });
 
-  newAnnounce.save().then((announce) => {
-    if (announce) {
-      res.json({ result: true, announce });
-    } else {
-      res.json({ error: "server error while creating the announce" });
-    }
-  });
+      newAnnounce.save().then((announce) => {
+        if (announce) {
+          res.json({ result: true, announce });
+        } else {
+          res.json({ error: "server error while creating the announce" });
+        }
+      });
+    });
 });
 
 // Route to delete an announce
