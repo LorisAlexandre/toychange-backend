@@ -98,10 +98,12 @@ router.patch("/update/:id", async (req, res) => {
 // Route to list all announces
 router.get("/announces", async (req, res) => {
   // Get all announces
-  Announce.find().then((announces) => {
-    // Send the announces to the client
-    res.json({ result: true, announces });
-  });
+  Announce.find()
+    .sort({ createdAt: "desc" })
+    .then((announces) => {
+      // Send the announces to the client
+      res.json({ result: true, announces });
+    });
 });
 
 // Route to view a single announce
