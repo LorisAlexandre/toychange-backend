@@ -83,5 +83,26 @@ router.post("/signin", async (req, res) => {
 router.get("/me", authentification, async (req, res, next) => {
   res.send(req.user);
 });
+router.put("/update", authentification, async (req, res) => {
+  try {
+    // Vérifie si les champs nécessaires sont présents dans le corps de la requête
+    if (!checkBody(req.body, ["firstname", "lastname"])) {
+      return res.status(400).json({ result: false, error: "Missing or empty fields" });
+    }
+
+    // Mise à jour des champs spécifiés pour l'utilisateur actuel
+    req.user.firstname = req.body.firstname;
+    req.user.lastname = req.body.lastname;
+    req.user.username = req.body.username;
+    req.user.email = req.body.email;
+
+    // Enregistre les modifications dans la base de données
+    await req.user.save();
+
+    res.status(200).json({ result: true, message: "User information updated successfully" });
+  } catch (error) {
+    res.status(500).json({ result: false, error: "Internal Server Error" });
+  }
+});
 
 module.exports = router;
