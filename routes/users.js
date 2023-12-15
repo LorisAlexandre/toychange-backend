@@ -1,13 +1,11 @@
 var express = require("express");
 var router = express.Router();
 
-const authentification = require('../middlewares/authentification')
-require('../models/connection');
-const User = require('../models/users');
-const { checkBody } = require('../module/checkBody');
-const uid2 = require('uid2');
-const bcrypt = require('bcrypt');
-
+const authentification = require("../middlewares/authentification");
+const User = require("../models/users");
+const { checkBody } = require("../module/checkBody");
+const uid2 = require("uid2");
+const bcrypt = require("bcrypt");
 
 router.post("/signup", async (req, res) => {
   if (!checkBody(req.body, ["email", "password"])) {
@@ -40,7 +38,11 @@ router.post("/signup", async (req, res) => {
     // Générer le token JWT et sauvegarder l'utilisateur
     const authToken = await saveUser.generateAuthTokenAndSaveUser();
 
-    const formattedDate = `${('0' + saveUser.registrationDate.getDate()).slice(-2)}/${('0' + (saveUser.registrationDate.getMonth() + 1)).slice(-2)}/${saveUser.registrationDate.getFullYear()}`;
+    const formattedDate = `${("0" + saveUser.registrationDate.getDate()).slice(
+      -2
+    )}/${("0" + (saveUser.registrationDate.getMonth() + 1)).slice(
+      -2
+    )}/${saveUser.registrationDate.getFullYear()}`;
 
     res.status(201).send({ registrationDate: formattedDate, username: saveUser.username,  firstname: saveUser.firstname, lastname: saveUser.lastname, id: saveUser.id, authToken, email: saveUser.email, password: saveUser.password, result: true, });
   } catch (e) {
@@ -80,6 +82,6 @@ router.post("/signin", async (req, res) => {
 
 router.get("/me", authentification, async (req, res, next) => {
   res.send(req.user);
-})
+});
 
 module.exports = router;
