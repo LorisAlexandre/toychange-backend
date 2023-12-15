@@ -124,4 +124,12 @@ router.get("/announces/:user", async (req, res) => {
   });
 });
 
+router.get("/search/:query", (req, res) => {
+  Announce.find({ title: { $regex: new RegExp(req.params.query, "i") } }).then(
+    (announces) => {
+      res.json({ result: true, announces });
+    }
+  );
+});
+
 module.exports = router;
