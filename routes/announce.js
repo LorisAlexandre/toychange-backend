@@ -177,9 +177,7 @@ router.get("/nearby", (req, res) => {
         ),
         announce,
       ])
-      .sort((a, b) => {
-        a[0] - b[0];
-      });
+      .sort((a, b) => a[0] - b[0]);
     res.json({ result: true, announcesSorted });
   });
 });
