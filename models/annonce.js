@@ -8,7 +8,16 @@ const announceSchema = mongoose.Schema({
     enum: ["inPerson", "postalDelivery"],
     required: true,
   },
-  address: { type: String },
+  address: {
+    houseNumber: String,
+    street: String,
+    postalCode: String,
+    city: String,
+    coords: {
+      longitude: String,
+      latitude: String,
+    },
+  },
   images: [{ type: String }], // Array of strings to store multiple images
   category: { type: String, required: true },
   condition: {
