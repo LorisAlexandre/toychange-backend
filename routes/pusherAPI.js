@@ -23,17 +23,17 @@ router.post("/createChannel", (req, res) => {
   });
 });
 
-router.post("/:channelName/message", (req, res) => {
+router.post("/:channelName/message", async (req, res) => {
   // const { sender, text } = req.body;
   const { channelName } = req.params;
 
-  Channel.findById(channelName).then((channel) => {
+  Channel.findById(channelName).then(async (channel) => {
     const newMessage = {
       ...req.body,
     };
     channel.messages.push(newMessage);
-    channel.save().then(() => {
-      pusher.trigger(channelName, "Message", req.body);
+    channel.save().then(async () => {
+      await pusher.trigger(channelName, "Message", req.body);
       res.json({ result: true, channel });
     });
   });
