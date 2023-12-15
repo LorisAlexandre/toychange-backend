@@ -44,16 +44,7 @@ router.post("/signup", async (req, res) => {
       -2
     )}/${saveUser.registrationDate.getFullYear()}`;
 
-    res.status(201).send({
-      registrationDate: formattedDate,
-      username: saveUser.username,
-      firstname: saveUser.firstname,
-      lastname: saveUser.lastname,
-      id: saveUser.id,
-      authToken,
-      email: saveUser.email,
-      password: saveUser.password,
-    });
+    res.status(201).send({ registrationDate: formattedDate, username: saveUser.username,  firstname: saveUser.firstname, lastname: saveUser.lastname, id: saveUser.id, authToken, email: saveUser.email, password: saveUser.password, result: true, });
   } catch (e) {
     res.status(400).send(e);
   }
