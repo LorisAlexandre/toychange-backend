@@ -50,9 +50,9 @@ router.post("/addAnnounce", (req, res) => {
     donor,
   });
 
-  newAnnounce.save().then((data) => {
-    if (data) {
-      res.json({ result: true, data });
+  newAnnounce.save().then((announce) => {
+    if (announce) {
+      res.json({ result: true, announce });
     } else {
       res.json({ error: "server error while creating the announce" });
     }
