@@ -42,7 +42,7 @@ router.post("/signup", async (req, res) => {
 
     const formattedDate = `${('0' + saveUser.registrationDate.getDate()).slice(-2)}/${('0' + (saveUser.registrationDate.getMonth() + 1)).slice(-2)}/${saveUser.registrationDate.getFullYear()}`;
 
-    res.status(201).send({ registrationDate: formattedDate, username: saveUser.username,  firstname: saveUser.firstname, lastname: saveUser.lastname, id: saveUser.id, authToken, email: saveUser.email, password: saveUser.password });
+    res.status(201).send({ registrationDate: formattedDate, username: saveUser.username,  firstname: saveUser.firstname, lastname: saveUser.lastname, id: saveUser.id, authToken, email: saveUser.email, password: saveUser.password, result: true, });
   } catch (e) {
     res.status(400).send(e);
   }
