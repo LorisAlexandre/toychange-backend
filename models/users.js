@@ -19,9 +19,6 @@ const userSchema = mongoose.Schema({
   email: {
     type: String,
     required: true,
-    // validate(value) {
-    //   if (!validator.isEmail(value)) throw new Error('E-mail non valide!');
-    // }
   },
   password: {
     type: String,
@@ -29,7 +26,7 @@ const userSchema = mongoose.Schema({
   },
     authToken: {
       type: String,
-   required: false,
+    required: false,
   },
   registrationDate: {
     type: Date,

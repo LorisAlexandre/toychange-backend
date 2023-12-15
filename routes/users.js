@@ -83,25 +83,36 @@ router.post("/signin", async (req, res) => {
 router.get("/me", authentification, async (req, res, next) => {
   res.send(req.user);
 });
-router.put("/update", authentification, async (req, res) => {
+router.put('/update', authentification, async (req, res) => {
   try {
-    // Vérifie si les champs nécessaires sont présents dans le corps de la requête
-    if (!checkBody(req.body, ["firstname", "lastname"])) {
-      return res.status(400).json({ result: false, error: "Missing or empty fields" });
+    // Récupère l'email de l'utilisateur authentifié
+    const user = req.user;
+
+    // Récupère les champs à mettre à jour à partir du corps de la requête
+    const { firstname, lastname, username, email } = req.body;
+
+    // Construit un objet avec les champs à mettre à jour (en excluant les valeurs indéfinies)
+    const updatedFields = {};
+    if (firstname !== undefined) updatedFields.firstname = firstname;
+    if (lastname !== undefined) updatedFields.lastname = lastname;
+    if (username !== undefined) updatedFields.username = username;
+    if (email !== undefined) updatedFields.email = email;
+
+    // Met à jour l'utilisateur dans la base de données en utilisant l'email comme critère de recherche
+    await User.updateOne(
+      { _id: user._id },
+      { $set: updatedFields },
+      );
+      const updatedUser = await User.findById(user._id);
+
+    if (!updatedUser) {
+      return res.status(404).json({ result: false, error: 'User not found' });
     }
 
-    // Mise à jour des champs spécifiés pour l'utilisateur actuel
-    req.user.firstname = req.body.firstname;
-    req.user.lastname = req.body.lastname;
-    req.user.username = req.body.username;
-    req.user.email = req.body.email;
-
-    // Enregistre les modifications dans la base de données
-    await req.user.save();
-
-    res.status(200).json({ result: true, message: "User information updated successfully" });
+    res.status(200).json({ result: true, message: 'User information updated successfully', user: updatedUser });
   } catch (error) {
-    res.status(500).json({ result: false, error: "Internal Server Error" });
+    console.error('Error updating user information:', error);
+    res.status(500).json({ result: false, error: 'Internal Server Error' });
   }
 });
 
