@@ -18,26 +18,38 @@ router.post("/addAnnounce", (req, res) => {
     donor,
   } = req.body;
 
-  const newAnnounce = new Announce({
-    title,
-    type,
-    deliveryMethod,
-    address,
-    images,
-    category,
-    condition,
-    description,
-    exchangeProposal,
-    donor,
-  });
+  fetch(
+    `https://nominatim.openstreetmap.org/search?format=json&postalcode=${address.postalCode}&countrycodes=FR`
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      const newAnnounce = new Announce({
+        title,
+        type,
+        deliveryMethod,
+        address: {
+          ...address,
+          coords: {
+            latitude: data[0].lat,
+            longitude: data[0].lon,
+          },
+        },
+        images,
+        category,
+        condition,
+        description,
+        exchangeProposal,
+        donor,
+      });
 
-  newAnnounce.save().then((data) => {
-    if (data) {
-      res.json({ result: true, data });
-    } else {
-      res.json({ error: "server error while creating the announce" });
-    }
-  });
+      newAnnounce.save().then((data) => {
+        if (data) {
+          res.json({ result: true, data });
+        } else {
+          res.json({ error: "server error while creating the announce" });
+        }
+      });
+    });
 });
 
 // Route to delete an announce
@@ -86,10 +98,12 @@ router.patch("/update/:id", async (req, res) => {
 // Route to list all announces
 router.get("/announces", async (req, res) => {
   // Get all announces
-  Announce.find().then((announces) => {
-    // Send the announces to the client
-    res.json({ result: true, announces });
-  });
+  Announce.find()
+    .sort({ createdAt: "desc" })
+    .then((announces) => {
+      // Send the announces to the client
+      res.json({ result: true, announces });
+    });
 });
 
 // Route to view a single announce
@@ -121,6 +135,52 @@ router.get("/announces/:user", async (req, res) => {
     } else {
       res.json({ result: false });
     }
+  });
+});
+
+router.get("/search/:query", (req, res) => {
+  Announce.find({ title: { $regex: new RegExp(req.params.query, "i") } }).then(
+    (announces) => {
+      res.json({ result: true, announces });
+    }
+  );
+});
+
+// annonces les plus proches
+router.get("/nearby", (req, res) => {
+  const { lat, long } = req.query;
+  const toRadius = (deg) => {
+    return deg * (Math.PI / 180);
+  };
+  const convertCoordsToKm = (origin, target) => {
+    const R = 6371;
+
+    const latRadians = toRadius(target.latitude - origin.latitude) / 2;
+    const longRadians = toRadius(target.longitude - origin.longitude) / 2;
+
+    const a =
+      Math.pow(Math.sin(latRadians), 2) +
+      Math.cos(toRadius(origin.latitude)) *
+        Math.cos(toRadius(target.latitude)) *
+        Math.pow(Math.sin(longRadians), 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return (R * c).toFixed(2);
+  };
+
+  Announce.find().then((announces) => {
+    const announcesSorted = announces
+      .map((announce) => [
+        convertCoordsToKm(
+          { latitude: lat, longitude: long },
+          announce.address.coords
+        ),
+        announce,
+      ])
+      .sort((a, b) => {
+        a[0] - b[0];
+      });
+    res.json({ result: true, announcesSorted });
   });
 });
 
