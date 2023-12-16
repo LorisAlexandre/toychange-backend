@@ -39,6 +39,7 @@ router.post("/:channelName/message", async (req, res) => {
     });
   });
 });
+
 router.post("/:channelName/image", async (req, res) => {
   const { sender, label } = req.body;
   const { channelName } = req.params;
