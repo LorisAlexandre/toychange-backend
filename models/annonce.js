@@ -19,12 +19,14 @@ const announceSchema = mongoose.Schema({
     },
   },
   images: [{ type: String }], // Array of strings to store multiple images
+  favImage: String,
   category: { type: String },
   condition: {
     type: String,
     enum: ["new", "likeNew", "good"],
     required: true,
   },
+  weight: String,
   description: { type: String, required: true },
   exchangeProposal: { type: String },
   donor: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
