@@ -19,6 +19,8 @@ router.post("/addAnnounce", (req, res) => {
     description,
     exchangeProposal,
     donor,
+    weight,
+    favImage,
   } = req.body;
 
   fetch(
@@ -45,6 +47,8 @@ router.post("/addAnnounce", (req, res) => {
         description,
         exchangeProposal,
         donor,
+        weight,
+        favImage,
       });
 
       newAnnounce.save().then((announce) => {
