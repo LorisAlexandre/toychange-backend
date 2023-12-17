@@ -35,4 +35,12 @@ router.get("/order/:id", (req, res) => {
     });
 });
 
+router.get("order/:announce", (req, res) => {
+  const { announce } = req.params;
+
+  Order.findOne({ announce }).then((order) => {
+    res.json({ order, result: true });
+  });
+});
+
 module.exports = router;
