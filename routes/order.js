@@ -35,7 +35,7 @@ router.get("/order/:id", (req, res) => {
     });
 });
 
-router.get("order/:seller", (req, res) => {
+router.get("/ordersBySeller/:seller", (req, res) => {
   const { seller } = req.params;
 
   Order.find({ seller }).then((orders) => {
