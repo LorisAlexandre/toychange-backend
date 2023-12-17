@@ -19,6 +19,7 @@ const messageSchema = mongoose.Schema({
     text: { type: String },
     createdAt: { type: Date, default: Date.now },
   },
+  traded: Boolean,
 });
 
 const channelSchema = mongoose.Schema({
