@@ -25,7 +25,7 @@ router.post("/createChannel", (req, res) => {
 });
 
 router.post("/:channelName/message", async (req, res) => {
-  // const { sender, text, label } = req.body;
+  // const { sender, text, label, replyTo } = req.body;
   const { channelName } = req.params;
 
   Channel.findById(channelName).then(async (channel) => {

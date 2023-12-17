@@ -6,10 +6,19 @@ const messageSchema = mongoose.Schema({
     ref: "users",
     required: true,
   },
-  label: { type: String, enum: ["proposal", ""] },
+  label: { type: String, enum: ["proposal", "replyTo"] },
   images: [String],
   text: { type: String },
   createdAt: { type: Date, default: Date.now, required: true },
+  replyTo: {
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+    },
+    images: [String],
+    text: { type: String },
+    createdAt: { type: Date, default: Date.now },
+  },
 });
 
 const channelSchema = mongoose.Schema({
