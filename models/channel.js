@@ -6,7 +6,7 @@ const messageSchema = mongoose.Schema({
     ref: "users",
     required: true,
   },
-  label: { type: String, enum: ["proposal", "replyTo"] },
+  label: { type: String, enum: ["proposal", "replyTo", ""], default: "" },
   images: [String],
   text: { type: String },
   createdAt: { type: Date, default: Date.now, required: true },
