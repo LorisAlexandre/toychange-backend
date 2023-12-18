@@ -28,7 +28,27 @@ const announceSchema = mongoose.Schema({
   },
   weight: String,
   description: { type: String, required: true },
-  exchangeProposal: { type: String },
+  exchangeProposal: {
+    title: String,
+    address: {
+      houseNumber: String,
+      street: String,
+      postalCode: String,
+      city: String,
+      coords: {
+        longitude: String,
+        latitude: String,
+      },
+    },
+    images: [{ type: String }], // Array of strings to store multiple images
+    favImage: String,
+    condition: {
+      type: String,
+      enum: ["new", "likeNew", "good"],
+      required: true,
+    },
+    exchanger: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
+  },
   donor: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
 });
 
