@@ -6,8 +6,20 @@ const messageSchema = mongoose.Schema({
     ref: "users",
     required: true,
   },
-  text: { type: String, required: true },
+  label: { type: String, enum: ["proposal", "replyTo", ""], default: "" },
+  images: [String],
+  text: { type: String },
   createdAt: { type: Date, default: Date.now, required: true },
+  replyTo: {
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+    },
+    images: [String],
+    text: { type: String },
+    createdAt: { type: Date, default: Date.now },
+  },
+  traded: Boolean,
 });
 
 const channelSchema = mongoose.Schema({

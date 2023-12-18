@@ -24,19 +24,19 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-    authToken: {
-      type: String,
+  authToken: {
+    type: String,
     required: false,
   },
   registrationDate: {
     type: Date,
     default: Date.now,
   },
-  
-  
 });
-userSchema.methods.generateAuthTokenAndSaveUser = async function() {
-  const authToken = jwt.sign({ _id: this._id.toString()}, 'toychange',  {  expiresIn : '30day'  });
+userSchema.methods.generateAuthTokenAndSaveUser = async function () {
+  const authToken = jwt.sign({ _id: this._id.toString() }, "toychange", {
+    expiresIn: "30day",
+  });
   this.authToken = authToken;
   console.log(authToken);
   await this.save();

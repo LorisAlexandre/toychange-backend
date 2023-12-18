@@ -48,7 +48,17 @@ router.post("/signup", async (req, res) => {
       -2
     )}/${saveUser.registrationDate.getFullYear()}`;
 
-    res.status(201).send({ registrationDate: formattedDate, username: saveUser.username,  firstname: saveUser.firstname, lastname: saveUser.lastname, id: saveUser.id, authToken, email: saveUser.email, password: saveUser.password, result: true, });
+    res.status(201).send({
+      registrationDate: formattedDate,
+      username: saveUser.username,
+      firstname: saveUser.firstname,
+      lastname: saveUser.lastname,
+      _id: saveUser._id,
+      authToken,
+      email: saveUser.email,
+      password: saveUser.password,
+      result: true,
+    });
   } catch (e) {
     res.status(400).send(e);
   }
@@ -74,7 +84,7 @@ router.post("/signin", async (req, res) => {
         username: user.username,
         firstname: user.firstname,
         lastname: user.lastname,
-        id: user.id,
+        _id: user._id,
         authToken,
         email: user.email,
       });
@@ -91,10 +101,7 @@ router.post("/signin", async (req, res) => {
 router.get("/me", authentification, async (req, res, next) => {
   res.send(req.user);
 });
-
-// Route Update
-
-router.put('/update', authentification, async (req, res) => {
+router.put("/update", authentification, async (req, res) => {
   try {
     // Récupère l'email de l'utilisateur authentifié
     const user = req.user;
@@ -111,20 +118,21 @@ router.put('/update', authentification, async (req, res) => {
     if (password !== undefined) updatedFields.password = hash;
 
     // Met à jour l'utilisateur dans la base de données en utilisant l'email comme critère de recherche
-    await User.updateOne(
-      { _id: user._id },
-      { $set: updatedFields },
-      );
-      const updatedUser = await User.findById(user._id);
+    await User.updateOne({ _id: user._id }, { $set: updatedFields });
+    const updatedUser = await User.findById(user._id);
 
     if (!updatedUser) {
-      return res.status(404).json({ result: false, error: 'User not found' });
+      return res.status(404).json({ result: false, error: "User not found" });
     }
 
-    res.status(200).json({ result: true, message: 'User information updated successfully', user: updatedUser });
+    res.status(200).json({
+      result: true,
+      message: "User information updated successfully",
+      user: updatedUser,
+    });
   } catch (error) {
-    console.error('Error updating user information:', error);
-    res.status(500).json({ result: false, error: 'Internal Server Error' });
+    console.error("Error updating user information:", error);
+    res.status(500).json({ result: false, error: "Internal Server Error" });
   }
 });
 

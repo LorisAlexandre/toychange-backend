@@ -3,7 +3,7 @@ const Order = require("../models/order");
 const router = express.Router();
 
 router.post("/createOrder", (req, res) => {
-  // const { announce, user, parcel } = req.body;
+  // const { announce, user, parcel, seller } = req.body;
   const newOrder = new Order({
     ...req.body,
   });
@@ -33,6 +33,14 @@ router.get("/order/:id", (req, res) => {
     .then((order) => {
       res.json({ result: true, order });
     });
+});
+
+router.get("/ordersBySeller/:seller", (req, res) => {
+  const { seller } = req.params;
+
+  Order.find({ seller }).then((orders) => {
+    res.json({ orders, result: true });
+  });
 });
 
 module.exports = router;

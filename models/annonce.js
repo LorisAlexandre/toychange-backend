@@ -5,7 +5,7 @@ const announceSchema = mongoose.Schema({
   type: { type: String, enum: ["donation", "exchange"], required: true },
   deliveryMethod: {
     type: String,
-    enum: ["inPerson", "postalDelivery"],
+    enum: ["inPerson", "postalDelivery", "both"],
     required: true,
   },
   address: {
@@ -19,12 +19,14 @@ const announceSchema = mongoose.Schema({
     },
   },
   images: [{ type: String }], // Array of strings to store multiple images
-  category: { type: String, required: true },
+  favImage: String,
+  category: { type: String },
   condition: {
     type: String,
-    enum: ["new", "likeNew", "good", "defects"],
+    enum: ["new", "likeNew", "good"],
     required: true,
   },
+  weight: String,
   description: { type: String, required: true },
   exchangeProposal: { type: String },
   donor: { type: mongoose.Schema.Types.ObjectId, ref: "users" },

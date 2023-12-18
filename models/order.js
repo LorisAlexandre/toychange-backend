@@ -15,6 +15,7 @@ const parcelSchema = mongoose.Schema({
 const orderSchema = mongoose.Schema({
   announce: { type: mongoose.Schema.Types.ObjectId, ref: "announces" },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
+  seller: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
   parcel: parcelSchema,
 });
 
