@@ -45,7 +45,6 @@ const announceSchema = mongoose.Schema({
     condition: {
       type: String,
       enum: ["new", "likeNew", "good"],
-      required: true,
     },
     exchanger: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
   },
