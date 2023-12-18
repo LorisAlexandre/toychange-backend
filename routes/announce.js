@@ -89,11 +89,15 @@ router.put("/addExchangeAnnounce/:id", (req, res) => {
             condition,
           },
         }
-      ).then(() => {
-        Announce.findById(id).then((announce) => {
-          res.json({ announce, result: true });
+      )
+        .then(() => {
+          Announce.findById(id).then((announce) => {
+            res.json({ announce, result: true });
+          });
+        })
+        .catch((e) => {
+          res.json({ result: false, e });
         });
-      });
     });
 });
 
