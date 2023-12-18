@@ -47,6 +47,7 @@ const announceSchema = mongoose.Schema({
       enum: ["new", "likeNew", "good"],
     },
     exchanger: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
+    weight: String,
   },
   donor: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
 });
