@@ -61,6 +61,42 @@ router.post("/addAnnounce", (req, res) => {
     });
 });
 
+router.put("/addExchangeAnnounce/:id", (req, res) => {
+  const { id } = req.params;
+  const { title, weight, description, address, condition } = req.body;
+
+  fetch(
+    `https://nominatim.openstreetmap.org/search?format=json&postalcode=${address.postalCode}&countrycodes=FR`
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      let latitude = data[0].lat;
+      let longitude = data[0].lon;
+      Announce.updateOne(
+        { _id: id },
+        {
+          exchangeProposal: {
+            title,
+            weight,
+            description,
+            address: {
+              ...address,
+              coords: {
+                latitude,
+                longitude,
+              },
+            },
+            condition,
+          },
+        }
+      ).then(() => {
+        Announce.findById(id).then((announce) => {
+          res.json({ announce, result: true });
+        });
+      });
+    });
+});
+
 // Route to delete an announce
 router.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
@@ -239,6 +275,71 @@ router.put("/uploadImages/:id", async (req, res) => {
           } else {
             imagesUrl.push(result.secure_url);
             Announce.updateOne({ _id: id }, { images: imagesUrl }).then(() => {
+              Announce.findById(id).then((announce) => {
+                res.json({ result: true, announce });
+              });
+            });
+          }
+        }
+      )
+      .end(photos.data);
+  }
+});
+
+router.put("/uploadImages/exchangeProposal/:id", async (req, res) => {
+  const { id } = req.params;
+  const photos = req.files.photosFromFront;
+  const imagesUrl = [];
+
+  if (photos.length) {
+    const uploadPhoto = (photo) => {
+      return new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              resource_type: "auto",
+            },
+            (error, result) => {
+              if (error) {
+                reject(error);
+              } else {
+                imagesUrl.push(result.secure_url);
+                resolve(result.secure_url);
+              }
+            }
+          )
+          .end(photo.data);
+      });
+    };
+    Promise.all(photos.map(uploadPhoto))
+      .then((uploadedUrls) => {
+        Announce.updateOne(
+          { _id: id },
+          { "exchangeProposal.images": uploadedUrls }
+        ).then(() => {
+          Announce.findById(id).then((announce) => {
+            res.json({ result: true, announce });
+          });
+        });
+      })
+      .catch((error) => {
+        res.status(500).json({ result: false, error });
+      });
+  } else {
+    cloudinary.uploader
+      .upload_stream(
+        {
+          resource_type: "auto",
+        },
+        (error, result) => {
+          if (error) {
+            res.status(500).json({ result: false, error });
+          } else {
+            imagesUrl.push(result.secure_url);
+            Announce.updateOne(
+              { _id: id },
+              { "exchangeProposal.images": imagesUrl }
+            ).then(() => {
               Announce.findById(id).then((announce) => {
                 res.json({ result: true, announce });
               });
