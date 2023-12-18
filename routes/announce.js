@@ -63,7 +63,8 @@ router.post("/addAnnounce", (req, res) => {
 
 router.put("/addExchangeAnnounce/:id", (req, res) => {
   const { id } = req.params;
-  const { title, weight, description, address, condition } = req.body;
+  const { title, weight, description, address, condition, exchanger } =
+    req.body;
 
   fetch(
     `https://nominatim.openstreetmap.org/search?format=json&postalcode=${address.postalCode}&countrycodes=FR`
@@ -87,6 +88,7 @@ router.put("/addExchangeAnnounce/:id", (req, res) => {
               },
             },
             condition,
+            exchanger,
           },
         }
       ).then(() => {

@@ -25,6 +25,15 @@ router.get("/orders/:user", (req, res) => {
     });
 });
 
+router.get("/ordersByAnnounce/:id", (req, res) => {
+  const { id } = req.params;
+  Order.find({ announce: id })
+    .populate("announce")
+    .then((announces) => {
+      res.json({ result: true, announces });
+    });
+});
+
 router.get("/order/:id", (req, res) => {
   const { id } = req.params;
 
