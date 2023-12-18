@@ -137,6 +137,7 @@ router.put("/update", authentification, async (req, res) => {
 });
 
 router.put('/update-password', authentification, async (req, res) => {
+  console.log(req.header);
   try {
     const user = req.user;
     const { oldPassword, newPassword } = req.body;
