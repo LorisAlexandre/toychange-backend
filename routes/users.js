@@ -6,6 +6,10 @@ const User = require("../models/users");
 const { checkBody } = require("../module/checkBody");
 const uid2 = require("uid2");
 const bcrypt = require("bcrypt");
+const { sign } = require("jsonwebtoken");
+
+
+// Route Signup
 
 router.post("/signup", async (req, res) => {
   if (!checkBody(req.body, ["email", "password"])) {
@@ -60,6 +64,8 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+// Route Signin
+
 router.post("/signin", async (req, res) => {
   if (!checkBody(req.body, ["email", "password"])) {
     res.json({ result: false, error: "Missing or empty fields" });
@@ -90,6 +96,8 @@ router.post("/signin", async (req, res) => {
   }
 });
 
+// Route Get
+
 router.get("/me", authentification, async (req, res, next) => {
   res.send(req.user);
 });
@@ -99,14 +107,15 @@ router.put("/update", authentification, async (req, res) => {
     const user = req.user;
 
     // Récupère les champs à mettre à jour à partir du corps de la requête
-    const { firstname, lastname, username, email } = req.body;
-
+    const { firstname, lastname, username, email, password } = req.body;
+    const hash = bcrypt.hashSync(password, 10);
     // Construit un objet avec les champs à mettre à jour (en excluant les valeurs indéfinies)
     const updatedFields = {};
     if (firstname !== undefined) updatedFields.firstname = firstname;
     if (lastname !== undefined) updatedFields.lastname = lastname;
     if (username !== undefined) updatedFields.username = username;
     if (email !== undefined) updatedFields.email = email;
+    if (password !== undefined) updatedFields.password = hash;
 
     // Met à jour l'utilisateur dans la base de données en utilisant l'email comme critère de recherche
     await User.updateOne({ _id: user._id }, { $set: updatedFields });
@@ -126,5 +135,34 @@ router.put("/update", authentification, async (req, res) => {
     res.status(500).json({ result: false, error: "Internal Server Error" });
   }
 });
+
+router.put('/update-password', authentification, async (req, res) => {
+  try {
+    const user = req.user;
+    const { oldPassword, newPassword } = req.body;
+
+    // Vérifiez d'abord l'ancien mot de passe
+    const isPasswordCorrect = bcrypt.compareSync(oldPassword, user.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ result: false, error: 'Incorrect old password' });
+    }
+
+    // Hash du nouveau mot de passe
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+
+    // Met à jour le mot de passe dans la base de données
+    await User.updateOne(
+      { _id: user._id },
+      { $set: { password: hashedPassword } }
+    );
+
+    res.status(200).json({ result: true, message: 'Password updated successfully' });
+  } catch (error) {
+    console.error('Error updating password:', error);
+    res.status(500).json({ result: false, error: 'Internal Server Error' });
+  }
+});
+
 
 module.exports = router;
