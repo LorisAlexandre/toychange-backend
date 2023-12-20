@@ -52,4 +52,10 @@ router.get("/ordersBySeller/:seller", (req, res) => {
   });
 });
 
+router.get("/allOrders", (req, res) => {
+  Order.find().then((orders) => {
+    res.json({ result: true, orders });
+  });
+});
+
 module.exports = router;
