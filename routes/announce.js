@@ -17,10 +17,8 @@ router.post("/addAnnounce", (req, res) => {
     category,
     condition,
     description,
-    exchangeProposal,
     donor,
     weight,
-    favImage,
   } = req.body;
 
   fetch(
@@ -30,35 +28,35 @@ router.post("/addAnnounce", (req, res) => {
     .then((data) => {
       let latitude = data[0].lat;
       let longitude = data[0].lon;
-      const newAnnounce = new Announce({
-        title,
-        type,
-        deliveryMethod,
-        address: {
-          ...address,
-          coords: {
-            latitude,
-            longitude,
-          },
-        },
-        images,
-        category,
-        condition,
-        description,
-        exchangeProposal,
-        donor,
-        weight,
-        favImage,
-      });
-
-      newAnnounce.save().then((announce) => {
-        if (announce) {
-          res.json({ result: true, announce });
-        } else {
-          res.json({ error: "server error while creating the announce" });
-        }
-      });
     });
+  const newAnnounce = new Announce({
+    title,
+    type,
+    deliveryMethod,
+    address: {
+      ...address,
+      // coords: {
+      //   latitude,
+      //   longitude,
+      // },
+    },
+    images,
+    category,
+    condition,
+    description,
+    exchangeProposal,
+    donor,
+    weight,
+    favImage,
+  });
+
+  newAnnounce.save().then((announce) => {
+    if (announce) {
+      res.json({ result: true, announce });
+    } else {
+      res.json({ error: "server error while creating the announce" });
+    }
+  });
 });
 
 router.put("/addExchangeAnnounce/:id", (req, res) => {
@@ -154,7 +152,6 @@ router.put("/update/:id", async (req, res) => {
       });
     return;
   }
-  console.log(req.body);
 
   // Check if the announce exists
   Announce.findById(id).then((announce) => {
