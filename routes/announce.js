@@ -122,36 +122,36 @@ router.put("/update/:id", async (req, res) => {
     // description,
   } = req.body;
 
-  if (address.postalCode) {
-    fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&postalcode=${address.postalCode}&countrycodes=FR`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        let latitude = data[0].lat;
-        let longitude = data[0].lon;
+  // if (address.postalCode) {
+  //   fetch(
+  //     `https://nominatim.openstreetmap.org/search?format=json&postalcode=${address.postalCode}&countrycodes=FR`
+  //   )
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       let latitude = data[0].lat;
+  //       let longitude = data[0].lon;
 
-        req.body.address.coords = { latitude, longitude };
-        Announce.findById(id).then((announce) => {
-          if (!announce) {
-            return res.status(404).json({ error: "Annonce introuvable." });
-          } else {
-            // Modify body announce
-            req.body.address = Object.assign(announce.address, address);
-            Announce.updateOne(
-              { _id: id },
-              { ...req.body, address: { ...address } },
-              { new: true }
-            ).then((announceModified) => {
-              Announce.findById(id).then((announce) => {
-                res.json({ result: true, announce });
-              });
-            });
-          }
-        });
-      });
-    return;
-  }
+  //       req.body.address.coords = { latitude, longitude };
+  //       Announce.findById(id).then((announce) => {
+  //         if (!announce) {
+  //           return res.status(404).json({ error: "Annonce introuvable." });
+  //         } else {
+  //           // Modify body announce
+  //           req.body.address = Object.assign(announce.address, address);
+  //           Announce.updateOne(
+  //             { _id: id },
+  //             { ...req.body, address: { ...address } },
+  //             { new: true }
+  //           ).then((announceModified) => {
+  //             Announce.findById(id).then((announce) => {
+  //               res.json({ result: true, announce });
+  //             });
+  //           });
+  //         }
+  //       });
+  //     });
+  //   return;
+  // }
 
   // Check if the announce exists
   Announce.findById(id).then((announce) => {
