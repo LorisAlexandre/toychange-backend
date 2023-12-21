@@ -14,7 +14,6 @@ router.post("/addAnnounce", (req, res) => {
     deliveryMethod,
     address,
     images,
-    category,
     condition,
     description,
     donor,
@@ -41,13 +40,10 @@ router.post("/addAnnounce", (req, res) => {
       // },
     },
     images,
-    category,
     condition,
     description,
-    exchangeProposal,
     donor,
     weight,
-    favImage,
   });
 
   newAnnounce.save().then((announce) => {
