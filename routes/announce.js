@@ -104,7 +104,7 @@ router.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
 
   // Check if the announce exists
-  Announce.delete({ _id: id }).then((annonce) => {
+  Announce.deleteOne({ _id: id }).then((announce) => {
     if (!announce) {
       return res.status(404).json({ error: "Announce not found." });
     } else {
