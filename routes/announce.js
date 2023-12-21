@@ -104,7 +104,7 @@ router.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
 
   // Check if the announce exists
-  Announce.findByIdAndDelete(id).then((annonce) => {
+  Announce.delete({ _id: id }).then((annonce) => {
     if (!announce) {
       return res.status(404).json({ error: "Announce not found." });
     } else {
@@ -113,8 +113,48 @@ router.delete("/delete/:id", async (req, res) => {
   });
 });
 
-router.patch("/update/:id", async (req, res) => {
+router.put("/update/:id", async (req, res) => {
   const { id } = req.params;
+  const {
+    // title,
+    // type,
+    // deliveryMethod,
+    address,
+    // condition,
+    // description,
+  } = req.body;
+
+  if (address.postalCode) {
+    fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&postalcode=${address.postalCode}&countrycodes=FR`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        let latitude = data[0].lat;
+        let longitude = data[0].lon;
+
+        req.body.address.coords = { latitude, longitude };
+        Announce.findById(id).then((announce) => {
+          if (!announce) {
+            return res.status(404).json({ error: "Annonce introuvable." });
+          } else {
+            // Modify body announce
+            req.body.address = Object.assign(announce.address, address);
+            Announce.updateOne(
+              { _id: id },
+              { ...req.body, address: { ...address } },
+              { new: true }
+            ).then((announceModified) => {
+              Announce.findById(id).then((announce) => {
+                res.json({ result: true, announce });
+              });
+            });
+          }
+        });
+      });
+    return;
+  }
+  console.log(req.body);
 
   // Check if the announce exists
   Announce.findById(id).then((announce) => {
@@ -122,22 +162,9 @@ router.patch("/update/:id", async (req, res) => {
       return res.status(404).json({ error: "Annonce introuvable." });
     } else {
       // Modify body announce
-      announce.title = req.body.title;
-      announce.type = req.body.type;
-      announce.deliveryMethod = req.body.deliveryMethod;
-      announce.address = req.body.address;
-      announce.images = req.body.images;
-      announce.category = req.body.category;
-      announce.condition = req.body.condition;
-      announce.description = req.body.description;
-      announce.exchangeProposal = req.body.exchangeProposal;
-      announce.donor = req.body.donor;
-
-      // Save Changes
-      announce.save().then((announce) => {
-        // Send a succesfull answer
-        res.json({ result: true, message: "Annonce mise à jour avec succès." });
-      });
+      Announce.updateOne({ _id: id }, { ...req.body }, { new: true }).then(
+        (announceModified) => res.json({ result: true, announce })
+      );
     }
   });
 });
