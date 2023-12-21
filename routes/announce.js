@@ -105,11 +105,14 @@ router.delete("/delete/:id", async (req, res) => {
 
   // Check if the announce exists
   Announce.findByIdAndDelete(id).then((annonce) => {
-    if (!announce) {
+    if (!annonce) {
       return res.status(404).json({ error: "Announce not found." });
     } else {
       res.json({ result: true, message: "Announce deleted successfully." });
     }
+  }).catch((error) => {
+    console.error("Error deleting announce:", error);
+    res.status(500).json({ result: false, message: "Internal server error." });
   });
 });
 
