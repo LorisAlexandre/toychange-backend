@@ -3,10 +3,7 @@ const mongoose = require("mongoose");
 const exchangeProposalSchema = mongoose.Schema({
   title: String,
   address: {
-    houseNumber: String,
-    street: String,
     postalCode: String,
-    city: String,
     coords: {
       longitude: String,
       latitude: String,
