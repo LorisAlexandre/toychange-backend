@@ -260,7 +260,7 @@ router.put("/uploadImages/:id", async (req, res) => {
         cloudinary.uploader
           .upload_stream(
             {
-              resource_type: "auto",
+              resource_type: "image",
             },
             (error, result) => {
               if (error) {
