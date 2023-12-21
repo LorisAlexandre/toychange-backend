@@ -14,13 +14,10 @@ router.post("/addAnnounce", (req, res) => {
     deliveryMethod,
     address,
     images,
-    category,
     condition,
     description,
-    exchangeProposal,
     donor,
     weight,
-    favImage,
   } = req.body;
 
   fetch(
@@ -42,13 +39,10 @@ router.post("/addAnnounce", (req, res) => {
           },
         },
         images,
-        category,
         condition,
         description,
-        exchangeProposal,
         donor,
         weight,
-        favImage,
       });
 
       newAnnounce.save().then((announce) => {
@@ -157,7 +151,6 @@ router.put("/update/:id", async (req, res) => {
       });
     return;
   }
-  console.log(req.body);
 
   // Check if the announce exists
   Announce.findById(id).then((announce) => {
@@ -270,7 +263,7 @@ router.put("/uploadImages/:id", async (req, res) => {
         cloudinary.uploader
           .upload_stream(
             {
-              resource_type: "auto",
+              resource_type: "image",
             },
             (error, result) => {
               if (error) {
