@@ -8,6 +8,7 @@ const uid2 = require("uid2");
 const bcrypt = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 
+
 // Route Signup
 
 router.post("/signup", async (req, res) => {
@@ -107,14 +108,15 @@ router.put("/update", authentification, async (req, res) => {
 
     // Récupère les champs à mettre à jour à partir du corps de la requête
     const { firstname, lastname, username, email, password } = req.body;
+    
+    const hash = bcrypt.hashSync(password, 10);
     // Construit un objet avec les champs à mettre à jour (en excluant les valeurs indéfinies)
     const updatedFields = {};
     if (firstname !== undefined) updatedFields.firstname = firstname;
     if (lastname !== undefined) updatedFields.lastname = lastname;
     if (username !== undefined) updatedFields.username = username;
     if (email !== undefined) updatedFields.email = email;
-    if (password !== undefined)
-      updatedFields.password = bcrypt.hashSync(password, 10);
+    if (password !== undefined) updatedFields.password = hash;
 
     // Met à jour l'utilisateur dans la base de données en utilisant l'email comme critère de recherche
     await User.updateOne({ _id: user._id }, { $set: updatedFields });
@@ -135,7 +137,7 @@ router.put("/update", authentification, async (req, res) => {
   }
 });
 
-router.put("/update-password", authentification, async (req, res) => {
+router.put('/update-password', authentification, async (req, res) => {
   console.log(req.header);
   try {
     const user = req.user;
@@ -145,9 +147,7 @@ router.put("/update-password", authentification, async (req, res) => {
     const isPasswordCorrect = bcrypt.compareSync(oldPassword, user.password);
 
     if (!isPasswordCorrect) {
-      return res
-        .status(400)
-        .json({ result: false, error: "Incorrect old password" });
+      return res.status(400).json({ result: false, error: 'Incorrect old password' });
     }
 
     // Hash du nouveau mot de passe
@@ -159,13 +159,12 @@ router.put("/update-password", authentification, async (req, res) => {
       { $set: { password: hashedPassword } }
     );
 
-    res
-      .status(200)
-      .json({ result: true, message: "Password updated successfully" });
+    res.status(200).json({ result: true, message: 'Password updated successfully' });
   } catch (error) {
-    console.error("Error updating password:", error);
-    res.status(500).json({ result: false, error: "Internal Server Error" });
+    console.error('Error updating password:', error);
+    res.status(500).json({ result: false, error: 'Internal Server Error' });
   }
 });
+
 
 module.exports = router;
