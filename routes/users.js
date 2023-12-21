@@ -109,14 +109,13 @@ router.put("/update", authentification, async (req, res) => {
     // Récupère les champs à mettre à jour à partir du corps de la requête
     const { firstname, lastname, username, email, password } = req.body;
     
-    const hash = bcrypt.hashSync(password, 10);
     // Construit un objet avec les champs à mettre à jour (en excluant les valeurs indéfinies)
     const updatedFields = {};
     if (firstname !== undefined) updatedFields.firstname = firstname;
     if (lastname !== undefined) updatedFields.lastname = lastname;
     if (username !== undefined) updatedFields.username = username;
     if (email !== undefined) updatedFields.email = email;
-    if (password !== undefined) updatedFields.password = hash;
+    if (password !== undefined) updatedFields.password = bcrypt.hashSync(password, 10);;
 
     // Met à jour l'utilisateur dans la base de données en utilisant l'email comme critère de recherche
     await User.updateOne({ _id: user._id }, { $set: updatedFields });
