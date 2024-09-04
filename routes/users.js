@@ -4,10 +4,7 @@ var router = express.Router();
 const authentification = require("../middlewares/authentification");
 const User = require("../models/users");
 const { checkBody } = require("../module/checkBody");
-const uid2 = require("uid2");
 const bcrypt = require("bcrypt");
-const { sign } = require("jsonwebtoken");
-
 
 // Route Signup
 
@@ -41,7 +38,6 @@ router.post("/signup", async (req, res) => {
 
     // Générer le token JWT et sauvegarder l'utilisateur
     const authToken = await saveUser.generateAuthTokenAndSaveUser();
-
     const formattedDate = `${("0" + saveUser.registrationDate.getDate()).slice(
       -2
     )}/${("0" + (saveUser.registrationDate.getMonth() + 1)).slice(
@@ -78,7 +74,17 @@ router.post("/signin", async (req, res) => {
     if (user && bcrypt.compareSync(req.body.password, user.password)) {
       // Génération du token JWT et sauvegarde de l'utilisateur
       const authToken = await user.generateAuthTokenAndSaveUser();
+      console.log("registrationDate from DB:", user.registrationDate);
+      const formattedDate = `${("0" + user.registrationDate.getDate()).slice(
+        -2
+      )}/${("0" + (user.registrationDate.getMonth() + 1)).slice(
+        -2
+      )}/${user.registrationDate.getFullYear()}`;
 
+      // Log avant d'envoyer la réponse
+      console.log("Formatted registrationDate:", formattedDate);
+
+      // Envoi de la réponse
       res.json({
         result: true,
         username: user.username,
@@ -87,6 +93,7 @@ router.post("/signin", async (req, res) => {
         _id: user._id,
         authToken,
         email: user.email,
+        registrationDate: formattedDate,
       });
     } else {
       res.json({ result: false, error: "User not found or wrong password" });
@@ -108,14 +115,15 @@ router.put("/update", authentification, async (req, res) => {
 
     // Récupère les champs à mettre à jour à partir du corps de la requête
     const { firstname, lastname, username, email, password } = req.body;
-    
+
     // Construit un objet avec les champs à mettre à jour (en excluant les valeurs indéfinies)
     const updatedFields = {};
     if (firstname !== undefined) updatedFields.firstname = firstname;
     if (lastname !== undefined) updatedFields.lastname = lastname;
     if (username !== undefined) updatedFields.username = username;
     if (email !== undefined) updatedFields.email = email;
-    if (password !== undefined) updatedFields.password = bcrypt.hashSync(password, 10);;
+    if (password !== undefined)
+      updatedFields.password = bcrypt.hashSync(password, 10);
 
     // Met à jour l'utilisateur dans la base de données en utilisant l'email comme critère de recherche
     await User.updateOne({ _id: user._id }, { $set: updatedFields });
@@ -136,7 +144,7 @@ router.put("/update", authentification, async (req, res) => {
   }
 });
 
-router.put('/update-password', authentification, async (req, res) => {
+router.put("/update-password", authentification, async (req, res) => {
   console.log(req.header);
   try {
     const user = req.user;
@@ -146,7 +154,9 @@ router.put('/update-password', authentification, async (req, res) => {
     const isPasswordCorrect = bcrypt.compareSync(oldPassword, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(400).json({ result: false, error: 'Incorrect old password' });
+      return res
+        .status(400)
+        .json({ result: false, error: "Incorrect old password" });
     }
 
     // Hash du nouveau mot de passe
@@ -158,12 +168,13 @@ router.put('/update-password', authentification, async (req, res) => {
       { $set: { password: hashedPassword } }
     );
 
-    res.status(200).json({ result: true, message: 'Password updated successfully' });
+    res
+      .status(200)
+      .json({ result: true, message: "Password updated successfully" });
   } catch (error) {
-    console.error('Error updating password:', error);
-    res.status(500).json({ result: false, error: 'Internal Server Error' });
+    console.error("Error updating password:", error);
+    res.status(500).json({ result: false, error: "Internal Server Error" });
   }
 });
-
 
 module.exports = router;
